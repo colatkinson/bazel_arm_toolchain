@@ -63,6 +63,7 @@ filegroup(
         "//tools/arm_compiler/linaro_linux_gcc:as",
         "//tools/arm_compiler/linaro_linux_gcc:gcc",
         "//tools/arm_compiler/linaro_linux_gcc:ld",
+        "@org_linaro_components_toolchain_gcc_5_3_1//:compiler_pieces",
     ],
 )
 
