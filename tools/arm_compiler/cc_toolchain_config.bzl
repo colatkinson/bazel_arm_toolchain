@@ -465,7 +465,7 @@ def _impl(ctx):
                                 "-lstdc++",
                                 "-latomic",
                                 "-lm",
-                                #"-lpthread",
+                                "-lpthread",
                                 "-Ltools/arm_compiler/linaro_linux_gcc/clang_more_libs",
                                 "-Lexternal/org_linaro_components_toolchain_gcc_5_3_1/arm-linux-gnueabihf/lib",
                                 "-Lexternal/org_linaro_components_toolchain_gcc_5_3_1/arm-linux-gnueabihf/libc/lib",

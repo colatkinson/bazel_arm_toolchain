@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*#include <cmath>
+#include <cmath>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -20,8 +20,4 @@
 int main(int argc, char* argv[]) {
   std::cout << "Hello! sqrt(time) = " << std::sqrt(time(NULL)) << std::endl;
   return EXIT_SUCCESS;
-}*/
-
-int main(int argc, char **argv) {
-    return 0;
 }
