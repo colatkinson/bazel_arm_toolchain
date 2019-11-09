@@ -1,0 +1,20 @@
+diff --git a/arm-linux-gnueabihf/libc/usr/lib/libc.so b/arm-linux-gnueabihf/libc/usr/lib/libc.so
+index 1a4e089..8dce2ac 100644
+--- a/arm-linux-gnueabihf/libc/usr/lib/libc.so
++++ b/arm-linux-gnueabihf/libc/usr/lib/libc.so
+@@ -2,4 +2,4 @@
+    Use the shared library, but some functions are only in
+    the static library, so try that secondarily.  */
+ OUTPUT_FORMAT(elf32-littlearm)
+-GROUP ( /lib/libc.so.6 /usr/lib/libc_nonshared.a  AS_NEEDED ( /lib/ld-linux-armhf.so.3 ) )
++GROUP ( ../../lib/libc.so.6 ./libc_nonshared.a  AS_NEEDED ( ../../lib/ld-linux-armhf.so.3 ) )
+diff --git a/arm-linux-gnueabihf/libc/usr/lib/libpthread.so b/arm-linux-gnueabihf/libc/usr/lib/libpthread.so
+index 7fffc24..47ec265 100644
+--- a/arm-linux-gnueabihf/libc/usr/lib/libpthread.so
++++ b/arm-linux-gnueabihf/libc/usr/lib/libpthread.so
+@@ -2,4 +2,4 @@
+    Use the shared library, but some functions are only in
+    the static library, so try that secondarily.  */
+ OUTPUT_FORMAT(elf32-littlearm)
+-GROUP ( /lib/libpthread.so.0 /usr/lib/libpthread_nonshared.a )
++GROUP ( ../../lib/libpthread.so.0 ./libpthread_nonshared.a )
