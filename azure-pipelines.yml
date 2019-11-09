@@ -1,0 +1,13 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+steps:
+- script: |
+    sudo apt-get install wget
+    wget https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel_0.29.1-linux-x86_64.deb -O bazel.deb
+    sudo apt install ./bazel.deb
+    bazel build //... --config=armeabi-v7a
+  displayName: 'Bazel build'
