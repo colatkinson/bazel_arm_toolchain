@@ -64,6 +64,7 @@ filegroup(
     'lib/gcc/arm-linux-gnueabihf/**',
     'include/**',
   ]),
+  visibility = ["//visibility:public"]
 )
 
 filegroup(
