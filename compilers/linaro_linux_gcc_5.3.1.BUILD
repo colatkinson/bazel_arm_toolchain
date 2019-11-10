@@ -64,7 +64,35 @@ filegroup(
     'lib/gcc/arm-linux-gnueabihf/**',
     'include/**',
   ]),
-  visibility = ["//visibility:public"]
+)
+
+filegroup(
+  name = 'libc_files',
+  srcs = glob([
+    'arm-linux-gnueabihf/libc/**',
+  ]),
+)
+
+load("@rules_pkg//:pkg.bzl", "pkg_tar", "pkg_deb")
+
+pkg_tar(
+    name = "libc_tar",
+    strip_prefix = "./arm-linux-gnueabihf/libc",
+    srcs = glob([
+      'arm-linux-gnueabihf/libc/**',
+    ]),
+    mode = "0755",
+    visibility = ["//visibility:public"]
+)
+
+pkg_tar(
+    name = "lib_tar",
+    strip_prefix = "./arm-linux-gnueabihf",
+    srcs = glob([
+      'arm-linux-gnueabihf/lib/**',
+    ]),
+    mode = "0755",
+    visibility = ["//visibility:public"]
 )
 
 filegroup(

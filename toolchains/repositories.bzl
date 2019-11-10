@@ -1,6 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def arm_toolchains_repositories():
+    rules_pkg()
     org_linaro_components_toolchain_gcc_5_3_1()
 
 def org_linaro_components_toolchain_gcc_5_3_1():
@@ -16,4 +17,11 @@ def org_linaro_components_toolchain_gcc_5_3_1():
         patch_args = ["-p1"],
         # sha256 = "987941c9fffdf56ffcbe90e8984673c16648c477b537fcf43add22fa62f161cd",
         sha256 = "ad27c39fc325db55adf1449e7a15c6a1cc4f17ca585a5b56d05dc628881f7d4a",
+    )
+
+def rules_pkg():
+    http_archive(
+        name = "rules_pkg",
+        url = "https://github.com/bazelbuild/rules_pkg/releases/download/0.2.4/rules_pkg-0.2.4.tar.gz",
+        sha256 = "4ba8f4ab0ff85f2484287ab06c0d871dcb31cc54d439457d28fd4ae14b18450a",
     )
