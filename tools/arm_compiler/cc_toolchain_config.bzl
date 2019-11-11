@@ -33,6 +33,8 @@ load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 def _impl(ctx):
     if (ctx.attr.cpu == "armeabi-v7a"):
         toolchain_identifier = "armeabi-v7a"
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        toolchain_identifier = "armeabi-v6"
     elif (ctx.attr.cpu == "k8"):
         toolchain_identifier = "local"
     else:
@@ -40,6 +42,8 @@ def _impl(ctx):
 
     if (ctx.attr.cpu == "armeabi-v7a"):
         host_system_name = "armeabi-v7a"
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        host_system_name = "armeabi-v6"
     elif (ctx.attr.cpu == "k8"):
         host_system_name = "local"
     else:
@@ -47,6 +51,8 @@ def _impl(ctx):
 
     if (ctx.attr.cpu == "armeabi-v7a"):
         target_system_name = "arm_a15"
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        target_system_name = "arm_1176"
     elif (ctx.attr.cpu == "k8"):
         target_system_name = "local"
     else:
@@ -54,12 +60,16 @@ def _impl(ctx):
 
     if (ctx.attr.cpu == "armeabi-v7a"):
         target_cpu = "armeabi-v7a"
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        target_cpu = "armeabi-v6"
     elif (ctx.attr.cpu == "k8"):
         target_cpu = "k8"
     else:
         fail("Unreachable")
 
     if (ctx.attr.cpu == "armeabi-v7a"):
+        target_libc = "glibc_2.19"
+    elif (ctx.attr.cpu == "armeabi-v6"):
         target_libc = "glibc_2.19"
     elif (ctx.attr.cpu == "k8"):
         target_libc = "local"
@@ -70,10 +80,14 @@ def _impl(ctx):
         compiler = "compiler"
     elif (ctx.attr.cpu == "armeabi-v7a"):
         compiler = "gcc"
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        compiler = "gcc"
     else:
         fail("Unreachable")
 
     if (ctx.attr.cpu == "armeabi-v7a"):
+        abi_version = "gcc"
+    elif (ctx.attr.cpu == "armeabi-v6"):
         abi_version = "gcc"
     elif (ctx.attr.cpu == "k8"):
         abi_version = "local"
@@ -81,6 +95,8 @@ def _impl(ctx):
         fail("Unreachable")
 
     if (ctx.attr.cpu == "armeabi-v7a"):
+        abi_libc_version = "glibc_2.19"
+    elif (ctx.attr.cpu == "armeabi-v6"):
         abi_libc_version = "glibc_2.19"
     elif (ctx.attr.cpu == "k8"):
         abi_libc_version = "local"
@@ -103,6 +119,14 @@ def _impl(ctx):
             enabled = True,
             tools = [
                 tool(path = "linaro_linux_gcc/arm-linux-gnueabihf-objcopy"),
+            ],
+        )
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        objcopy_embed_data_action = action_config(
+            action_name = "objcopy_embed_data",
+            enabled = True,
+            tools = [
+                tool(path = "raspi_linux_gcc/arm-linux-gnueabihf-objcopy"),
             ],
         )
     elif (ctx.attr.cpu == "k8"):
@@ -148,7 +172,7 @@ def _impl(ctx):
                 ),
             ],
         )
-    elif (ctx.attr.cpu == "armeabi-v7a"):
+    elif (ctx.attr.cpu == "armeabi-v7a" or ctx.attr.cpu == "armeabi-v6"):
         unfiltered_compile_flags_feature = feature(
             name = "unfiltered_compile_flags",
             enabled = True,
@@ -292,6 +316,121 @@ def _impl(ctx):
                                 "external/org_linaro_components_toolchain_gcc_5_3_1/include/c++/5.3.1/arm-linux-gnueabihf",
                                 "-isystem",
                                 "external/org_linaro_components_toolchain_gcc_5_3_1/include/c++/5.3.1",
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        default_compile_flags_feature = feature(
+            name = "default_compile_flags",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.assemble,
+                        ACTION_NAMES.preprocess_assemble,
+                        ACTION_NAMES.linkstamp_compile,
+                        ACTION_NAMES.c_compile,
+                        ACTION_NAMES.cpp_compile,
+                        ACTION_NAMES.cpp_header_parsing,
+                        ACTION_NAMES.cpp_module_compile,
+                        ACTION_NAMES.cpp_module_codegen,
+                        ACTION_NAMES.lto_backend,
+                        ACTION_NAMES.clif_match,
+                    ],
+                    flag_groups = [
+                        flag_group(
+                            flags = [
+                                "--sysroot=external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/libc",
+                                "-mfloat-abi=hard",
+                                "-nostdinc",
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/lib/gcc/arm-linux-gnueabihf/4.8.3/include",
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/libc/usr/include",
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/libc/usr/include/arm-linux-gnueabihf",
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/lib/gcc/arm-linux-gnueabihf/4.8.3/include-fixed",
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/libc/usr/include",
+                                "-U_FORTIFY_SOURCE",
+                                "-fstack-protector",
+                                "-fPIE",
+                                # "-fdiagnostics-color=always",
+                                "-Wall",
+                                "-Wunused-but-set-parameter",
+                                "-Wno-free-nonheap-object",
+                                "-fno-omit-frame-pointer",
+                            ],
+                        ),
+                    ],
+                ),
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.assemble,
+                        ACTION_NAMES.preprocess_assemble,
+                        ACTION_NAMES.linkstamp_compile,
+                        ACTION_NAMES.c_compile,
+                        ACTION_NAMES.cpp_compile,
+                        ACTION_NAMES.cpp_header_parsing,
+                        ACTION_NAMES.cpp_module_compile,
+                        ACTION_NAMES.cpp_module_codegen,
+                        ACTION_NAMES.lto_backend,
+                        ACTION_NAMES.clif_match,
+                    ],
+                    flag_groups = [flag_group(flags = ["-g"])],
+                    with_features = [with_feature_set(features = ["dbg"])],
+                ),
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.assemble,
+                        ACTION_NAMES.preprocess_assemble,
+                        ACTION_NAMES.linkstamp_compile,
+                        ACTION_NAMES.c_compile,
+                        ACTION_NAMES.cpp_compile,
+                        ACTION_NAMES.cpp_header_parsing,
+                        ACTION_NAMES.cpp_module_compile,
+                        ACTION_NAMES.cpp_module_codegen,
+                        ACTION_NAMES.lto_backend,
+                        ACTION_NAMES.clif_match,
+                    ],
+                    flag_groups = [
+                        flag_group(
+                            flags = [
+                                "-g0",
+                                "-O2",
+                                "-DNDEBUG",
+                                "-ffunction-sections",
+                                "-fdata-sections",
+                            ],
+                        ),
+                    ],
+                    with_features = [with_feature_set(features = ["opt"])],
+                ),
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.linkstamp_compile,
+                        ACTION_NAMES.cpp_compile,
+                        ACTION_NAMES.cpp_header_parsing,
+                        ACTION_NAMES.cpp_module_compile,
+                        ACTION_NAMES.cpp_module_codegen,
+                        ACTION_NAMES.lto_backend,
+                        ACTION_NAMES.clif_match,
+                    ],
+                    flag_groups = [
+                        flag_group(
+                            flags = [
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/include/c++/4.8.3/arm-linux-gnueabihf",
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/include/c++/4.8.3",
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/include/c++/4.8.3/arm-linux-gnueabihf",
+                                "-isystem",
+                                "external/raspi_components_toolchain_gcc_4_8_3/include/c++/4.8.3",
                             ],
                         ),
                     ],
@@ -486,6 +625,41 @@ def _impl(ctx):
                 ),
             ],
         )
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        default_link_flags_feature = feature(
+            name = "default_link_flags",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = all_link_actions,
+                    flag_groups = [
+                        flag_group(
+                            flags = [
+                                "--sysroot=external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/libc",
+                                "-lstdc++",
+                                "-latomic",
+                                "-lm",
+                                "-lpthread",
+                                "-Ltools/arm_compiler/linaro_linux_gcc/clang_more_libs",
+                                "-Lexternal/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/lib",
+                                "-Lexternal/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/libc/lib",
+                                "-Lexternal/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/libc/usr/lib",
+                                "-Bexternal/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/bin",
+                                "-Wl,--dynamic-linker=/lib/ld-linux-armhf.so.3",
+                                "-no-canonical-prefixes",
+                                "-pie",
+                                "-Wl,-z,relro,-z,now",
+                            ],
+                        ),
+                    ],
+                ),
+                flag_set(
+                    actions = all_link_actions,
+                    flag_groups = [flag_group(flags = ["-Wl,--gc-sections"])],
+                    with_features = [with_feature_set(features = ["opt"])],
+                ),
+            ],
+        )
     elif (ctx.attr.cpu == "k8"):
         default_link_flags_feature = feature(
             name = "default_link_flags",
@@ -540,7 +714,7 @@ def _impl(ctx):
             sysroot_feature,
             unfiltered_compile_flags_feature,
         ]
-    elif (ctx.attr.cpu == "armeabi-v7a"):
+    elif (ctx.attr.cpu == "armeabi-v7a" or ctx.attr.cpu == "armeabi-v6"):
         features = [
             default_compile_flags_feature,
             default_link_flags_feature,
@@ -567,6 +741,20 @@ def _impl(ctx):
             "%package(@org_linaro_components_toolchain_gcc_5_3_1//lib/gcc/arm-linux-gnueabihf/5.3.1/include)%",
             "%package(@org_linaro_components_toolchain_gcc_5_3_1//lib/gcc/arm-linux-gnueabihf/5.3.1/include-fixed)%",
             "%package(@org_linaro_components_toolchain_gcc_5_3_1//arm-linux-gnueabihf/include)%/c++/5.3.1",
+        ]
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        cxx_builtin_include_directories = [
+            "%package(@raspi_components_toolchain_gcc_4_8_3//include)%",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//arm-linux-gnueabihf/libc/usr/include)%",
+            "%package(@raspi_components_toolchain_gcc_5_3_1//arm-linux-gnueabihf/libc/usr/include/arm-linux-gnueabihf)%",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//arm-linux-gnueabihf/libc/usr/lib/include)%",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//arm-linux-gnueabihf/libc/lib/gcc/arm-linux-gnueabihf/4.8.3/include-fixed)%",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//include)%/c++/4.8.3",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//arm-linux-gnueabihf/libc/lib/gcc/arm-linux-gnueabihf/4.8.3/include)%",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//arm-linux-gnueabihf/libc/lib/gcc/arm-linux-gnueabihf/4.8.3/include-fixed)%",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//lib/gcc/arm-linux-gnueabihf/4.8.3/include)%",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//lib/gcc/arm-linux-gnueabihf/4.8.3/include-fixed)%",
+            "%package(@raspi_components_toolchain_gcc_4_8_3//arm-linux-gnueabihf/include)%/c++/4.8.3",
         ]
     elif (ctx.attr.cpu == "k8"):
         cxx_builtin_include_directories = [
@@ -633,6 +821,53 @@ def _impl(ctx):
                 path = "linaro_linux_gcc/arm-linux-gnueabihf-strip",
             ),
         ]
+    elif (ctx.attr.cpu == "armeabi-v6"):
+        tool_paths = [
+            tool_path(
+                name = "ar",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-ar",
+            ),
+            tool_path(
+                name = "compat-ld",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-ld",
+            ),
+            tool_path(
+                name = "cpp",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-gcc",
+            ),
+            tool_path(
+                name = "dwp",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-dwp",
+            ),
+            tool_path(
+                name = "gcc",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-gcc",
+            ),
+            tool_path(
+                name = "gcov",
+                path = "arm-frc-linux-gnueabi/arm-frc-linux-gnueabi-gcov-4.9",
+            ),
+            tool_path(
+                name = "ld",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-ld",
+            ),
+            tool_path(
+                name = "nm",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-nm",
+            ),
+            tool_path(
+                name = "objcopy",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-objcopy",
+            ),
+            tool_path(
+                name = "objdump",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-objdump",
+            ),
+            tool_path(
+                name = "strip",
+                path = "raspi_linux_gcc/arm-linux-gnueabihf-strip",
+            ),
+        ]
     elif (ctx.attr.cpu == "k8"):
         tool_paths = [
             tool_path(name = "ar", path = "/usr/bin/ar"),
@@ -679,7 +914,7 @@ def _impl(ctx):
 cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
-        "cpu": attr.string(mandatory = True, values = ["armeabi-v7a", "k8"]),
+        "cpu": attr.string(mandatory = True, values = ["armeabi-v7a", "armeabi-v6", "k8"]),
     },
     provides = [CcToolchainConfigInfo],
     executable = True,

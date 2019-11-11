@@ -1,12 +1,15 @@
 # Use our custom-configured c++ toolchain.
 
 build:armeabi-v7a --crosstool_top=//tools/arm_compiler:toolchain
+build:armeabi-v6 --crosstool_top=//tools/arm_compiler:toolchain
 
 # Use --cpu as a differentiator.
 
 build:armeabi-v7a --cpu=armeabi-v7a
+build:armeabi-v6 --cpu=armeabi-v6
 
 # Use the default Bazel C++ toolchain to build the tools used during the
 # build.
 
 build:armeabi-v7a --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+build:armeabi-v6 --host_crosstool_top=@bazel_tools//tools/cpp:toolchain

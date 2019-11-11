@@ -15,6 +15,7 @@ filegroup(
         ":cc-compiler-k8",
         ":linaro_linux_all_files",
         "@org_linaro_components_toolchain_gcc_5_3_1//:compiler_components",
+        "@raspi_components_toolchain_gcc_4_8_3//:compiler_components",
     ],
 )
 
@@ -32,8 +33,10 @@ cc_toolchain_suite(
     # target_cpu | compiler
     toolchains = {
         "armeabi-v7a": "cc-compiler-armeabi-v7a",
+        "armeabi-v6": "cc-compiler-armeabi-v6",
         "k8": "cc-compiler-k8",
         "armeabi-v7a|gcc": "cc-compiler-armeabi-v7a",
+        "armeabi-v6|gcc": "cc-compiler-armeabi-v6",
         "k8|compiler": "cc-compiler-k8",
     },
     visibility = ["//visibility:public"],
@@ -105,4 +108,50 @@ cc_toolchain(
     objcopy_files = ":empty",
     strip_files = ":empty",
     supports_param_files = 1,
+)
+
+filegroup(
+    name = "raspi_linux_all_files",
+    srcs = [
+        "//tools/arm_compiler/raspi_linux_gcc:tool-wrappers",
+        "@raspi_components_toolchain_gcc_4_8_3//:compiler_pieces",
+    ],
+)
+
+filegroup(
+    name = "raspi_linux_linker_files",
+    srcs = [
+        "//tools/arm_compiler/raspi_linux_gcc:ar",
+        "//tools/arm_compiler/raspi_linux_gcc:gcc",
+        "//tools/arm_compiler/raspi_linux_gcc:ld",
+        "@raspi_components_toolchain_gcc_4_8_3//:compiler_pieces",
+    ],
+)
+
+filegroup(
+    name = "raspi_linux_compiler_files",
+    srcs = [
+        "//tools/arm_compiler/raspi_linux_gcc:as",
+        "//tools/arm_compiler/raspi_linux_gcc:gcc",
+        "//tools/arm_compiler/raspi_linux_gcc:ld",
+        "@raspi_components_toolchain_gcc_4_8_3//:compiler_pieces",
+    ],
+)
+
+cc_toolchain_config(name = "armeabi-v6_config", cpu = "armeabi-v6", visibility = ["//visibility:public"])
+
+cc_toolchain(
+    name = "cc-compiler-armeabi-v6",
+    toolchain_identifier = "armeabi-v6",
+    toolchain_config = ":armeabi-v6_config",
+    all_files = ":raspi_linux_all_files",
+    ar_files = "//tools/arm_compiler/raspi_linux_gcc:ar",
+    as_files = "//tools/arm_compiler/raspi_linux_gcc:as",
+    compiler_files = ":raspi_linux_compiler_files",
+    dwp_files = ":empty",
+    linker_files = ":raspi_linux_linker_files",
+    objcopy_files = "//tools/arm_compiler/raspi_linux_gcc:objcopy",
+    strip_files = "//tools/arm_compiler/raspi_linux_gcc:strip",
+    supports_param_files = 1,
+    visibility = ["//visibility:public"],
 )
