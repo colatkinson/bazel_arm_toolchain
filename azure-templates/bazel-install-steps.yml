@@ -1,0 +1,6 @@
+steps:
+- script: |
+    sudo apt-get install wget patch file
+    wget https://github.com/bazelbuild/bazel/releases/download/1.0.1/bazel_1.0.1-linux-x86_64.deb -O bazel.deb
+    sudo apt install ./bazel.deb
+  displayName: "Install dependencies"

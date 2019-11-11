@@ -1,11 +1,22 @@
 pool:
   vmImage: 'ubuntu-18.04'
 
-steps:
-- script: |
-    sudo apt-get install wget patch file
-    wget https://github.com/bazelbuild/bazel/releases/download/1.0.1/bazel_1.0.1-linux-x86_64.deb -O bazel.deb
-    sudo apt install ./bazel.deb
-    bazel build //... --config=armeabi-v7a
-    file bazel-bin/hello | grep "ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV)"
-  displayName: 'Bazel build'
+jobs:
+- job: armeabi_v7a
+  displayName: 'armeabi-v7a'
+  dependsOn: []
+  steps:
+  - template: azure-templates/bazel-install-steps.yml
+  - script: |
+      bazel build //... --config=armeabi-v7a
+      file bazel-bin/hello | grep "ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV)"
+    displayName: "Build"
+- job: armeabi_v6
+  displayName: 'armeabi-v6'
+  dependsOn: []
+  steps:
+  - template: azure-templates/bazel-install-steps.yml
+  - script: |
+      bazel build //... --config=armeabi-v6
+      file bazel-bin/hello | grep "ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV)"
+    displayName: "Build"
