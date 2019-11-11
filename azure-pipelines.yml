@@ -11,6 +11,9 @@ jobs:
       bazel build //... --config=armeabi-v7a
       file bazel-bin/hello | grep "ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV)"
     displayName: "Build"
+  - script:
+      ./scripts/armeabi-v7a-docker-test.sh
+    displayName: "Test"
 - job: armeabi_v6
   displayName: 'armeabi-v6'
   dependsOn: []
@@ -20,3 +23,6 @@ jobs:
       bazel build //... --config=armeabi-v6
       file bazel-bin/hello | grep "ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV)"
     displayName: "Build"
+  - script:
+      ./scripts/armeabi-v6-docker-test.sh
+    displayName: "Test"
