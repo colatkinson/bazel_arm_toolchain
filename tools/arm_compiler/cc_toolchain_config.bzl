@@ -308,6 +308,7 @@ def _impl(ctx):
                     flag_groups = [
                         flag_group(
                             flags = [
+                                "-std=c++11",
                                 "-isystem",
                                 "external/org_linaro_components_toolchain_gcc_5_3_1/arm-linux-gnueabihf/include/c++/5.3.1/arm-linux-gnueabihf",
                                 "-isystem",
@@ -423,6 +424,7 @@ def _impl(ctx):
                     flag_groups = [
                         flag_group(
                             flags = [
+                                "-std=c++11",
                                 "-isystem",
                                 "external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/include/c++/4.8.3/arm-linux-gnueabihf",
                                 "-isystem",
@@ -602,7 +604,9 @@ def _impl(ctx):
                             flags = [
                                 "--sysroot=external/org_linaro_components_toolchain_gcc_5_3_1/arm-linux-gnueabihf/libc",
                                 "-lstdc++",
+                                "-Wl,-Bstatic",
                                 "-latomic",
+                                "-Wl,-Bdynamic",
                                 "-lm",
                                 "-lpthread",
                                 "-Ltools/arm_compiler/linaro_linux_gcc/clang_more_libs",
@@ -636,9 +640,13 @@ def _impl(ctx):
                         flag_group(
                             flags = [
                                 "--sysroot=external/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/libc",
+                                "-static-libgcc",
+                                "-static-libstdc++",
+                                "-Wl,-Bstatic",
                                 "-lstdc++",
                                 "-latomic",
                                 "-lm",
+                                "-Wl,-Bdynamic",
                                 "-lpthread",
                                 "-Ltools/arm_compiler/linaro_linux_gcc/clang_more_libs",
                                 "-Lexternal/raspi_components_toolchain_gcc_4_8_3/arm-linux-gnueabihf/lib",

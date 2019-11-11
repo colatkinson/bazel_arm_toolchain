@@ -16,8 +16,21 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <thread>
+#include <atomic>
 
 int main(int argc, char* argv[]) {
   std::cout << "Hello! sqrt(time) = " << std::sqrt(time(NULL)) << std::endl;
+
+  std::atomic<int> val(1);
+
+  std::thread t([&val]() {
+    ++val;
+    std::cout << "Ahoy, me lads!" << std::endl;
+  });
+  t.join();
+
+  std::cout << "Val is " << val << std::endl;
+
   return EXIT_SUCCESS;
 }

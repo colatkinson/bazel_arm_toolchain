@@ -7,6 +7,6 @@ echo
 
 set -ex
 
-cp -R libc/* /
-cp -R stdlib/* /lib
+tar xf libs.tar
+ldd /hello || true
 /hello

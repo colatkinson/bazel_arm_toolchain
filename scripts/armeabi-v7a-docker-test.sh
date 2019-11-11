@@ -2,6 +2,8 @@
 
 set -ex
 
+bazel build //:hello --config=armeabi-v7a
+
 cur_dir_name=$(basename $PWD)
 
 tag=":buster-slim"
