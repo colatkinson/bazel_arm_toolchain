@@ -21,6 +21,7 @@ jobs:
   - template: azure-templates/bazel-install-steps.yml
   - script: |
       bazel build //... --config=armeabi-v6
+      ls -la $HOME
       file bazel-bin/hello | grep "ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV)"
     displayName: "Build"
   - script:
